@@ -1,8 +1,8 @@
-package com.bud.weather.tracker.service.impl;
+package com.bud.weather.api.service.impl;
 
-import com.bud.weather.tracker.model.Location;
-import com.bud.weather.tracker.repository.LocationRepository;
-import com.bud.weather.tracker.service.LocationService;
+import com.bud.weather.api.model.Location;
+import com.bud.weather.api.repository.LocationRepository;
+import com.bud.weather.api.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

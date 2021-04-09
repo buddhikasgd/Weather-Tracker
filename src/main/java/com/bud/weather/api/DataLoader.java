@@ -1,8 +1,8 @@
-package com.bud.weather.tracker;
+package com.bud.weather.api;
 
-import com.bud.weather.tracker.dto.LocationDataDto;
-import com.bud.weather.tracker.model.Location;
-import com.bud.weather.tracker.service.LocationService;
+import com.bud.weather.api.dto.LocationDataDto;
+import com.bud.weather.api.model.Location;
+import com.bud.weather.api.service.LocationService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

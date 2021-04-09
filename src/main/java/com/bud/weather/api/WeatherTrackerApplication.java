@@ -1,4 +1,4 @@
-package com.bud.weather.tracker;
+package com.bud.weather.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

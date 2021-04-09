@@ -1,4 +1,4 @@
-package com.bud.weather.tracker;
+package com.bud.weather.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

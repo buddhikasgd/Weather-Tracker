@@ -1,4 +1,4 @@
-package com.bud.weather.tracker.dto;
+package com.bud.weather.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

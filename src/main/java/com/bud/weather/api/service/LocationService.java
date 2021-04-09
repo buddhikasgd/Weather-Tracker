@@ -1,6 +1,6 @@
-package com.bud.weather.tracker.service;
+package com.bud.weather.api.service;
 
-import com.bud.weather.tracker.model.Location;
+import com.bud.weather.api.model.Location;
 
 import java.util.List;
 

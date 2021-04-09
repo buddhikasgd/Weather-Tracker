@@ -1,4 +1,4 @@
-package com.bud.weather.tracker.model;
+package com.bud.weather.api.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

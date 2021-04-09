@@ -1,8 +1,8 @@
-package com.bud.weather.tracker.repository;
+package com.bud.weather.api.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.bud.weather.tracker.model.Location;
+import com.bud.weather.api.model.Location;
 
 import java.util.List;
 
