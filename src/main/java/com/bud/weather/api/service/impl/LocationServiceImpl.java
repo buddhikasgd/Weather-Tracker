@@ -22,6 +22,6 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<Location> findByCountryAndCity(String country, String city) {
-        return locationRepository.findByCountryAndCity(country, city);
+        return locationRepository.findByCountryAndCity(country.toUpperCase(), city.toUpperCase());
     }
 }

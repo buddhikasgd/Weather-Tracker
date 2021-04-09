@@ -36,7 +36,7 @@ public class DataLoader implements ApplicationRunner {
         List<LocationDataDto> LocationDataDtoList = mapper.readValue(countryAndCityData, new TypeReference<List<LocationDataDto>>() {});
         for (LocationDataDto locationDataDto : LocationDataDtoList) {
             logger.info("Loading country and city data {} - {}", locationDataDto.getCountry(), locationDataDto.getName());
-            locationService.addLocation(new Location(locationDataDto.getCountry(), locationDataDto.getName()));
+            locationService.addLocation(new Location(locationDataDto.getCountry().toUpperCase(), locationDataDto.getName().toUpperCase()));
         }
     }
 }
