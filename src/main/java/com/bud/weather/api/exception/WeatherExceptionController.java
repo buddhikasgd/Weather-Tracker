@@ -21,14 +21,14 @@ public class WeatherExceptionController {
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
     public ErrorMessageDto ValidationException(ValidationException exception) {
         logger.error(exception.getMessage());
-        return new ErrorMessageDto(HttpStatus.UNPROCESSABLE_ENTITY.value(), ErrorConstant.INVALID_COUNTRY_OR_CITY);
+        return new ErrorMessageDto(HttpStatus.UNPROCESSABLE_ENTITY.value(), exception.getMessage());
     }
 
     @ExceptionHandler(value = LocationNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessageDto LocationNotFoundException(LocationNotFoundException exception) {
         logger.error(exception.getMessage());
-        return new ErrorMessageDto(HttpStatus.NOT_FOUND.value(), ErrorConstant.COUNTRY_OR_CITY_NOT_FOUND);
+        return new ErrorMessageDto(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
     @ExceptionHandler(value = HttpClientErrorException.class)
@@ -45,7 +45,17 @@ public class WeatherExceptionController {
         return new ErrorMessageDto(HttpStatus.UNPROCESSABLE_ENTITY.value(), exception.getMessage());
     }
 
+    @ExceptionHandler(value = TooManyRequestsException.class)
+    @ResponseStatus(value = HttpStatus.TOO_MANY_REQUESTS)
+    public ErrorMessageDto TooManyRequestsException(TooManyRequestsException exception) {
+        logger.error("Too many requests {}", exception.getMessage());
+        return new ErrorMessageDto(HttpStatus.TOO_MANY_REQUESTS.value(), ErrorConstant.TOO_MANY_REQUESTS);
+    }
 
-
-
+    @ExceptionHandler(value = MissingHeaderException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessageDto MissingHeaderException(MissingHeaderException exception) {
+        logger.error("Header is missing {}", exception.getMessage());
+        return new ErrorMessageDto(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
 }

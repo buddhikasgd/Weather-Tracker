@@ -1,33 +1,22 @@
 package com.bud.weather.api.config;
 
-import com.bud.weather.api.config.properties.OpenWeatherProperties;
-import com.bud.weather.api.service.external.OpenWeatherService;
-import com.bud.weather.api.service.external.impl.OpenWeatherServiceImpl;
+import com.bud.weather.api.config.interceptor.RateLimitInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ComponentScan(basePackages = "com.bud.weather.api")
-public class AppConfig {
-    @Autowired
-    private OpenWeatherProperties openWeatherProperties;
+@ComponentScan(basePackages = "com.bud.weather.api.config.interceptor")
+public class AppConfig implements WebMvcConfigurer {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RateLimitInterceptor rateLimitInterceptor;
 
-    @Bean
-    OpenWeatherService openWeatherService() {
-        return new OpenWeatherServiceImpl(
-                 openWeatherProperties.getApiBaseUrl() +
-                         openWeatherProperties.getApiWeatherUrl(),
-                restTemplate);
-    }
-
-    @Bean
-    RestTemplate restTemplate() {
-        return new RestTemplate();
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(rateLimitInterceptor)
+                .addPathPatterns("/api/v1/current-weather/**");
     }
 }

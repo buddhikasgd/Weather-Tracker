@@ -15,16 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
+
+import static com.bud.weather.api.util.ErrorConstant.COUNTRY_OR_CITY_NOT_FOUND;
+import static com.bud.weather.api.util.ErrorConstant.INVALID_COUNTRY_OR_CITY;
 
 @RestController
 @RequestMapping("/api/v1/current-weather")
@@ -41,7 +41,8 @@ public class WeatherController {
     @GetMapping(value = "/countries/{country}/cities/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WeatherDto> getCurrentWeatherByCountryAndCity(
             @PathVariable("country") @Valid @NotBlank @Pattern(regexp = "^[A-Za-z]{2}$", message = "Invalid country") @Size(max = 30, message = "max length is 30 characters") String country,
-            @PathVariable("city") @Valid @NotBlank @Pattern(regexp = "^[A-Za-z]+$", message = "Invalid city") @Size(max = 50, message = "max length is 50 characters")  String city) {
+            @PathVariable("city") @Valid @NotBlank @Pattern(regexp = "^[A-Za-z]+$", message = "Invalid city") @Size(max = 50, message = "max length is 50 characters")  String city,
+            @RequestHeader(value = "X-api-key") String apiKey) {
         logger.info("Request - country: {} / city : {}", country, city);
         if (StringUtils.hasLength(country) && StringUtils.hasLength(city)) {
             List<Location> locationList = locationService.findByCountryAndCity(country, city);
@@ -51,10 +52,11 @@ public class WeatherController {
                     return new ResponseEntity(weatherDto, HttpStatus.OK);
                 }
             }
-            throw new LocationNotFoundException(String.format("Not found in database - country: %s / city : %s", country, city));
+            logger.error("Not found in database - country: {} / city : {}", country, city);
+            throw new LocationNotFoundException(COUNTRY_OR_CITY_NOT_FOUND);
         } else {
-            logger.info("Invalid inputs - country: {} / city : {}", country, city);
-            throw new ValidationException(String.format("Invalid inputs - country: %s / city : %s", country, city));
+            logger.error("Invalid inputs - country: {} / city : {}", country, city);
+            throw new ValidationException(INVALID_COUNTRY_OR_CITY);
         }
     }
 
