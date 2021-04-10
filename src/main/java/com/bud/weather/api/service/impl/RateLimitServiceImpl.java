@@ -14,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service("rateLimitService")
 public class RateLimitServiceImpl implements RateLimitService {
     private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
+    private final int NO_OF_WEATHER_REPORTS_PER_HOUR_PER_KEY = 5;
+    private final int RATE_LIMIT_REFRESH_TIME_IN_HOURS = 1;
 
     @Override
     public Bucket resolveBucket(String apiKey) {
@@ -22,7 +24,8 @@ public class RateLimitServiceImpl implements RateLimitService {
 
     private Bucket createBucket(String apiKey) {
         Bandwidth limit = Bandwidth.classic(
-                3, Refill.intervally(3, Duration.ofMinutes(1)));
+                NO_OF_WEATHER_REPORTS_PER_HOUR_PER_KEY,
+                Refill.intervally(NO_OF_WEATHER_REPORTS_PER_HOUR_PER_KEY, Duration.ofHours(RATE_LIMIT_REFRESH_TIME_IN_HOURS)));
         return Bucket4j.builder()
                 .addLimit(limit)
                 .build();

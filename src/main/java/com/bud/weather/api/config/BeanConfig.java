@@ -19,15 +19,15 @@ public class BeanConfig {
     private RestTemplate restTemplate;
 
     @Bean
+    RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
     OpenWeatherService openWeatherService() {
         return new OpenWeatherServiceImpl(
                  openWeatherProperties.getApiBaseUrl() +
                          openWeatherProperties.getApiWeatherUrl(),
                 restTemplate);
-    }
-
-    @Bean
-    RestTemplate restTemplate() {
-        return new RestTemplate();
     }
 }
