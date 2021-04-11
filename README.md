@@ -5,7 +5,7 @@ Tracking weather by country and city
 Maven, Java 8
 
 ### Commands
-Build: <br/>
+Build & Test: <br/>
 mvn clean install
 
 Run the app locally: <br/>
