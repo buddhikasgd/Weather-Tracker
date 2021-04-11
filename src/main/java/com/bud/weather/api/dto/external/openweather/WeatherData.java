@@ -32,7 +32,7 @@ public class WeatherData implements Serializable
     @JsonProperty("coord")
     private Coord coord;
     @JsonProperty("weather")
-    private List<Weather> weather = null;
+    private List<OpenWeather> openWeather = null;
     @JsonProperty("base")
     private String base;
     @JsonProperty("main")

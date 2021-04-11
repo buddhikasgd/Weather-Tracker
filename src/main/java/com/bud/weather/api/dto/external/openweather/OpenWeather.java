@@ -16,7 +16,7 @@ import java.io.Serializable;
     "icon"
 })
 @Getter @Setter @NoArgsConstructor
-public class Weather implements Serializable
+public class OpenWeather implements Serializable
 {
     private final static long serialVersionUID = 2717494992653466918L;
     @JsonProperty("id")

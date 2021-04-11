@@ -35,11 +35,14 @@ import static com.bud.weather.api.util.ErrorConstant.INVALID_COUNTRY_OR_CITY;
 public class WeatherController {
     public static final Logger logger = LoggerFactory.getLogger(WeatherController.class);
 
-    @Autowired
     private LocationService locationService;
+    private WeatherService weatherService;
 
     @Autowired
-    private WeatherService weatherService;
+    public WeatherController(LocationService locationService, WeatherService weatherService) {
+        this.locationService = locationService;
+        this.weatherService = weatherService;
+    }
 
     @ApiOperation(value = "Retrieve current weather by location", response = WeatherDto.class)
     @ApiResponses(value = {

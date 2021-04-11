@@ -9,9 +9,10 @@ import org.springframework.web.client.RestTemplate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class OpenWeatherServiceImplTest {
+class OpenOpenWeatherServiceImplTest {
     private static OpenWeatherService weatherService;
     private static RestTemplate restTemplate;
+
     @BeforeAll
     static void setup() {
         String url = "https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid=b2e94810d748ed12518632c57f5e3835";

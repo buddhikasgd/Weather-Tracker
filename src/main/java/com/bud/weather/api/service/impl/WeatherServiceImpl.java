@@ -2,6 +2,7 @@ package com.bud.weather.api.service.impl;
 
 import com.bud.weather.api.dto.WeatherDto;
 import com.bud.weather.api.dto.external.openweather.WeatherData;
+import com.bud.weather.api.mapper.OpenWeatherMapper;
 import com.bud.weather.api.model.Weather;
 import com.bud.weather.api.repository.WeatherRepository;
 import com.bud.weather.api.service.WeatherService;
@@ -20,12 +21,15 @@ import java.util.List;
 @Service("weatherService")
 public class WeatherServiceImpl implements WeatherService {
     private final Logger logger = LoggerFactory.getLogger(WeatherServiceImpl.class);
-
-    @Autowired
     private OpenWeatherService openWeatherService;
+    private WeatherRepository weatherRepository;
+    private OpenWeatherMapper openWeatherMapper = new OpenWeatherMapper();
 
     @Autowired
-    private WeatherRepository weatherRepository;
+    public WeatherServiceImpl(OpenWeatherService openWeatherService, WeatherRepository weatherRepository) {
+        this.openWeatherService = openWeatherService;
+        this.weatherRepository = weatherRepository;
+    }
 
     @Override
     @Transactional
@@ -33,10 +37,19 @@ public class WeatherServiceImpl implements WeatherService {
             @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
     })
     public WeatherDto getCurrentWeatherByCountryAndCity(String country, String city) {
-        WeatherData weatherData = openWeatherService.retrieveWeatherData(country, city);
-        Weather weatherEntity = createWeatherEntity(country, city, weatherData);
+        WeatherData weatherData = this.openWeatherService.retrieveWeatherData(country, city);
+        Weather weatherEntity = createWeatherEntity(weatherData);
+        return saveAndReturnWeatherDto(weatherEntity, country, city);
+    }
+
+    private WeatherDto saveAndReturnWeatherDto(Weather weatherEntity, String country, String city) {
         if (weatherEntity != null) {
-            Weather updatedWeather = weatherRepository.save(weatherEntity);
+            List<Weather> storedWeatherData = this.weatherRepository.findByCountryAndCity(country.toUpperCase(), city.toUpperCase());
+            if (!CollectionUtils.isEmpty(storedWeatherData)) {
+                weatherEntity.setId(storedWeatherData.get(0).getId());
+                weatherEntity.getWeatherDetail().setId(storedWeatherData.get(0).getWeatherDetail().getId());
+            }
+            Weather updatedWeather = this.weatherRepository.save(weatherEntity);
             return new WeatherDto(updatedWeather.getDescription());
         }
         return null;
@@ -44,7 +57,7 @@ public class WeatherServiceImpl implements WeatherService {
 
     public WeatherDto handleServiceOutage(String country, String city) {
         logger.error("Unable to call open weather service!!");
-        List<Weather> storedWeatherData = weatherRepository.findByCountryAndCity(country.toUpperCase(), city.toUpperCase());
+        List<Weather> storedWeatherData = this.weatherRepository.findByCountryAndCity(country.toUpperCase(), city.toUpperCase());
         if (!CollectionUtils.isEmpty(storedWeatherData)) {
             logger.debug("Returning stored data from database until service resumes!!");
             return new WeatherDto(storedWeatherData.get(0).getDescription());
@@ -53,11 +66,7 @@ public class WeatherServiceImpl implements WeatherService {
         return null;
     }
 
-    private Weather createWeatherEntity(String country, String city, WeatherData weatherData) {
-        if (weatherData != null && !CollectionUtils.isEmpty(weatherData.getWeather())) {
-            String description = weatherData.getWeather().get(0).getDescription();
-            return new Weather(country.toUpperCase(), city.toUpperCase(), description);
-        }
-        return null;
+    private Weather createWeatherEntity(WeatherData weatherData) {
+        return weatherData != null ? openWeatherMapper.map(weatherData, Weather.class) : null;
     }
 }
