@@ -52,7 +52,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         } else {
             long waitForRefill = probe.getNanosToWaitForRefill() / 60000000000L;
             response.addHeader(HEADER_X_RATE_LIMIT_RETRY_MINUTES, String.valueOf(waitForRefill));
-            throw new TooManyRequestsException("Rate limit has exceeded!! Please Try again in " + waitForRefill + " minutes");
+            throw new TooManyRequestsException("Rate limit has been exceeded!! Please Try again in " + waitForRefill + " minutes");
         }
     }
 
